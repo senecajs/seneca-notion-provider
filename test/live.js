@@ -1,6 +1,6 @@
-const Seneca = require('seneca')
+const Seneca = require('seneca');
 
-Seneca({ legacy: false })
+Seneca({legacy: false})
   .test()
   .use('promisify')
   .use('entity')
@@ -8,16 +8,16 @@ Seneca({ legacy: false })
     // debug: true,
     file: [__dirname + '/local-env.js;?'],
     var: {
-      $TRELLO_APIKEY: String,
-      $TRELLO_USERTOKEN: String,
+      $NOTION_TOKEN: String,
     }
   })
   .use('provider', {
     provider: {
-      trello: {
+      notion: {
         keys: {
-          apikey: { value: '$TRELLO_APIKEY' },
-          usertoken: { value: '$TRELLO_USERTOKEN' },
+          authToken: {
+            value: '$NOTION_TOKEN'
+          },
         }
       }
     }
@@ -26,11 +26,28 @@ Seneca({ legacy: false })
   .ready(async function() {
     const seneca = this
 
-    console.log('SDK:', seneca.export('TrelloProvider/sdk')())
+    console.log('SDK:', seneca.export('NotionProvider/sdk')())
+    console.log(await seneca.entity('provider/notion/page').list$());
+    let pageId = await seneca.entity('provider/notion/page').load$('<id>');
+    console.log(pageId);
+    pageId.properties.checkMe.checkbox = false;
+    pageId = await pageId.save$();
+    console.log(pageId);
+    /*
+    this.act('sys:provider,get:info,provider:notion', async(err, reply)=>{
+	    console.log(reply);
+    });
 
-    console.log(await seneca.post('sys:provider,provider:trello,get:info'))
+    this.act('role:entity,base:notion,cmd:load,name:page,zone:provider', {q: {id: '77508137-5a10-4570-83ff-320643bf5e81'}}, async(err, reply)=>{
+	    console.log(reply);
+    });
     
-    const list = await seneca.entity("provider/trello/board").list$()
-    console.log(list.slice(0,3))
-  })
+    this.act('role:entity,base:notion,cmd:save,name:page,zone:provider', {ent: {id: pageId.id, properties:pageId.properties}}, async(err, reply)=>{
+           if(!err)
+                   console.log(reply);
+   });
+   */
 
+
+
+  });
