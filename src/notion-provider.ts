@@ -1,3 +1,5 @@
+/* Copyright © 2022 Seneca Project Contributors, MIT License. */
+
 const Pkg = require('../package.json')
 
 const Notion = require('@notionhq/client')
