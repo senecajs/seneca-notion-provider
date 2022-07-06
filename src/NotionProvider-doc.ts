@@ -1,6 +1,6 @@
 const docs = {
   get_info: {
-    desc: 'Get information about the page.',
+    desc: 'Get information about the Notion SDK.',
   },
 }
 
