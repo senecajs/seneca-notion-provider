@@ -43,7 +43,7 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
 	      }
 	      const options = {
 	        method: 'POST',
-		  headers: {
+		headers: {
 		  'Authorization' : `Bearer ${this.shared.authTok}`,
 		  'Accept': 'application/json',
 		  'Notion-Version': '2022-02-22',
