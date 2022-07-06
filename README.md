@@ -36,31 +36,31 @@ Seneca()
   // Get API keys using the seneca-env plugin
   .use('env', {
     var: {
-      $TRELLO_APIKEY: String,
-      $TRELLO_USERTOKEN: String,
+      $NOTION_TOKEN: String,
     }
   })
   .use('provider', {
     provider: {
-      trello: {
+      notion: {
         keys: {
-          apikey: { value: '$TRELLO_APIKEY' },
-          usertoken: { value: '$TRELLO_USERTOKEN' },
+          authToken: {
+            value: '$NOTION_TOKEN'
+          },
         }
       }
     }
   })
-  .use('trello-provider')
+  .use('notion-provider')
 
-let board = await seneca.entity('provider/trello/board')
-  .load$('<trello-board-id>')
+let pageId = await seneca.entity('provider/notion/page')
+                  .load$('<notion_page_id>');
 
-Console.log('BOARD', board)
+Console.log('PAGE', pageId)
 
-board.desc = 'New description'
-board = await board.save$()
+pageId.properties.checkMe.checkbox = false;
+pageId = await pageId.save$()
 
-Console.log('UPDATED BOARD', board)
+Console.log('UPDATED PAGE', pageId)
 
 ```
 
