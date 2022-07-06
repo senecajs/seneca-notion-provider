@@ -1,10 +1,10 @@
-![Seneca Trello-Provider](http://senecajs.org/files/assets/seneca-logo.png)
+![Seneca Notion-Provider](http://senecajs.org/files/assets/seneca-logo.png)
 
-> _Seneca Trello-Provider_ is a plugin for [Seneca](http://senecajs.org)
+> _Seneca Notion-Provider_ is a plugin for [Seneca](http://senecajs.org)
 
 
-Provides access to the Trello API using the Seneca *provider*
-convention. Trello API entities are represented as Seneca entities so
+Provides access to the Notion API using the Seneca *provider*
+convention. Notion API entities are represented as Seneca entities so
 that they can be accessed using the Seneca entity API and messages.
 
 See [seneca-entity](senecajs/seneca-entity) and the [Seneca Data
@@ -67,7 +67,7 @@ Console.log('UPDATED BOARD', board)
 ## Install
 
 ```sh
-$ npm install @seneca/trello-provider @seneca/env
+$ npm install @seneca/notion-provider @seneca/env
 ```
 
 
@@ -84,7 +84,7 @@ Set plugin options when loading with:
 ```js
 
 
-seneca.use('TrelloProvider', { name: value, ... })
+seneca.use('NotionProvider', { name: value, ... })
 
 
 ```
@@ -102,9 +102,9 @@ seneca.use('TrelloProvider', { name: value, ... })
 
 ## Action Patterns
 
-* [role:entity,base:trello,cmd:load,name:repo,zone:provider](#-roleentitybasetrellocmdloadnamerepozoneprovider-)
-* [role:entity,base:trello,cmd:save,name:repo,zone:provider](#-roleentitybasetrellocmdsavenamerepozoneprovider-)
-* [sys:provider,get:info,provider:trello](#-sysprovidergetinfoprovidertrello-)
+* [role:entity,base:notion,cmd:load,name:page,zone:provider](#-roleentitybasenotioncmdloadnamepagezoneprovider-)
+* [role:entity,base:notion,cmd:save,name:page,zone:provider](#-roleentitybasenotioncmdsavenamepagezoneprovider-)
+* [sys:provider,get:info,provider:notion](#-sysprovidergetinfoprovidernotion-)
 
 
 <!--END:action-list-->
@@ -114,21 +114,21 @@ seneca.use('TrelloProvider', { name: value, ... })
 
 ## Action Descriptions
 
-### &laquo; `role:entity,base:trello,cmd:load,name:repo,zone:provider` &raquo;
+### &laquo; `role:entity,base:notion,cmd:load,name:page,zone:provider` &raquo;
 
-Load Trello repository data into an entity.
-
-
-
-----------
-### &laquo; `role:entity,base:trello,cmd:save,name:repo,zone:provider` &raquo;
-
-Update Trello repository data from an entity.
+Load Notion page data into an entity.
 
 
 
 ----------
-### &laquo; `sys:provider,get:info,provider:trello` &raquo;
+### &laquo; `role:entity,base:notion,cmd:save,name:page,zone:provider` &raquo;
+
+Update Notion page data from an entity.
+
+
+
+----------
+### &laquo; `sys:provider,get:info,provider:notion` &raquo;
 
 Get information about the provider.
 
