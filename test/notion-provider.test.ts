@@ -40,11 +40,9 @@ describe('notion-provider', () => {
 
     const list = await seneca.entity('provider/notion/page').list$()
     expect(list.length > 0).toBeTruthy();
-    console.log(list)
 
     const page0 = await seneca.entity('provider/notion/page')
 		    .load$(Config.page0.id);
-    console.log(page0);
 
     expect(page0.url).toEqual('https://www.notion.so/<your_page_url>');
 
