@@ -48,8 +48,8 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
 		  'Accept': 'application/json',
 		  'Notion-Version': '2022-02-22',
 		  'Content-Type': 'application/json'
-		  },
-		  body: JSON.stringify({page_size: limit})
+		},
+		body: JSON.stringify({page_size: limit})
 	      };
 	      // see https://developers.notion.com/reference/post-search for usage
 	      let res = await fetch('https://api.notion.com/v1/search', options)
