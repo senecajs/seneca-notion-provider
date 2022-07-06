@@ -6,7 +6,7 @@ const fetch = require('node-fetch')
 type NotionProviderOptions = {}
 
 function NotionProvider(this: any, options: NotionProviderOptions) {
-  const seneca = this
+  const seneca: any = this
   const entityBuilder = this.export('provider/entityBuilder')
    
   seneca.message('sys:provider,provider:notion,get:info', get_info)
