@@ -39,8 +39,13 @@ describe('notion-provider', () => {
     const seneca = await makeSeneca()
 
     const list = await seneca.entity('provider/notion/page').list$()
-    expect(list.length > 0).toBeTruthy();
+    expect(list.length > 0).toBeTruthy()
+  })
 
+  test('page-basic_2', async () => {
+    if(!Config) return
+    const seneca = await makeSeneca()
+	
     const page0 = await seneca.entity('provider/notion/page')
 		    .load$(Config.page0.id);
 
@@ -55,8 +60,8 @@ describe('notion-provider', () => {
 				    .load$(Config.page0.id)
     expect(page0u.url).toEqual('https://www.notion.so/<your_page_url>');
     expect(page0u.properties.checkMe.checkbox).toEqual(page0u.properties.checkMe.checkbox);
- })
-
+  })
+	
 })
 
 async function makeSeneca() {
