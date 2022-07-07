@@ -94,7 +94,7 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
 		}
 		throw err
 	      }
-	      return entize(ent) // a more efficient fix for the properties issue 
+	      return ent // a more efficient fix for the properties issue 
             }
           }
         }
