@@ -86,7 +86,7 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
 	      let obj
 	      try{
 	        await this.shared.sdk.pages.update({page_id: id, properties: ent.properties})
-		obj = await this.entity('provider/notion/page').load$(id) // a fix to get all the properties
+		// obj = await this.entity('provider/notion/page').load$(id) // a fix to get all the properties
 	      }
 	      catch(err){
 	        if(err.status >= 400 && err.status < 500){
@@ -94,7 +94,7 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
 		}
 		throw err
 	      }
-	      return entize(obj)
+	      return entize(ent) // a more efficient fix for the properties issue 
             }
           }
         }
