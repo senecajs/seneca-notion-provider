@@ -82,13 +82,13 @@ function NotionProvider(options) {
 					await this.shared.sdk.pages.update({page_id: id, properties: ent.properties});
 
 
-					obj = await this.entity('provider/notion/page').load$(id); // a fix to get all the properties
+					// obj = await this.entity('provider/notion/page').load$(id); // a fix to get all the properties
 				}catch(err){
 					if(err.status >= 400 && err.status < 500)
 						return null;
 					throw err;
 				}
-				return entize(obj);
+				return ent; // entize(obj);
                         }
                     }
                 }
