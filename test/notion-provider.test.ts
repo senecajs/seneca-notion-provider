@@ -144,7 +144,6 @@ describe('notion-provider', () => {
     const seneca = await makeSeneca()
 
     const list = await seneca.entity('provider/notion/database').list$()
-    console.log('list: ', list)
     expect(list.length > 0).toBeTruthy()
   })
 
