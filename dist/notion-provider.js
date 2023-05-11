@@ -46,27 +46,41 @@ function NotionProvider(options) {
                     load: {
                         action: async function (entize, msg) {
                             let id = msg.q.id;
+                            let res;
                             null == id ? this.fail('invalid_id') : null;
-                            let res = await getJSON(`https://api.notion.com/v1/pages/${id}`, makeConfig());
+                            res = await getJSON(`https://api.notion.com/v1/pages/${id}`, makeConfig());
                             return entize(res);
                         }
                     },
                     save: {
                         action: async function (entize, msg) {
+                            let q = msg.q || {};
                             let ent = msg.ent;
                             let id = ent.id;
-                            let page = ent.page;
-                            let obj;
-                            try {
-                                await this.shared.sdk.pages.update({ page_id: id, properties: ent.properties });
-                            }
-                            catch (err) {
-                                if (err.status >= 400 && err.status < 500) {
-                                    return null;
+                            let properties = ent.properties;
+                            let res;
+                            (!q.db_id && !id) ? this.fail('invalid_db_id') : null;
+                            const config = null == id
+                                ? {
+                                    method: 'POST',
+                                    body: {
+                                        'parent': {
+                                            'database_id': q.db_id
+                                        },
+                                        'properties': { ...properties }
+                                    }
                                 }
-                                throw err;
-                            }
-                            return ent; // a more efficient fix for the properties issue - less efficient: uncomment "obj" and return entize(obj)
+                                : {
+                                    method: 'PATCH',
+                                    body: JSON.stringify({
+                                        'properties': { ...properties }
+                                    })
+                                };
+                            (null == id)
+                                ? (res = await postJSON('https://api.notion.com/v1/pages', makeConfig(config)))
+                                : (res = await fetch(`https://api.notion.com/v1/pages/${id}`, makeConfig(config)),
+                                    res = await res.json());
+                            return entize(res);
                         }
                     }
                 }
@@ -84,9 +98,14 @@ function NotionProvider(options) {
         seneca.shared.headers = {
             'Authorization': `Bearer ${authToken}`,
             'Accept': 'application/json',
-            'Notion-Version': '2022-02-22',
+            'Notion-Version': '2021-05-13',
             'Content-Type': 'application/json'
         };
+        /*
+        console.log(seneca.shared.headers)
+        let auth = await fetch('https://api.notion.com/v1/databases', seneca.shared.headers)
+        console.log(auth)
+        */
     });
     return {
         exports: {

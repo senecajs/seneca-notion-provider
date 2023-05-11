@@ -14,16 +14,20 @@ if (Fs.existsSync(__dirname + '/local-config.js')) {
   Config = require('./local-config')
 }
 
+jest.setTimeout(6000)
+
 describe('notion-provider', () => {
   test('happy', async ()=>{
     expect(NotionProvider).toBeDefined()
     expect(NotionProviderDoc).toBeDefined()
     const seneca = await makeSeneca()
 
-    expect(await seneca.post('sys:provider,provider:notion,get:info')).toMatchObject({
-      ok: true,
-      name: 'notion',
-     })
+    expect(await seneca.post('sys:provider,provider:notion,get:info'))
+      .toMatchObject({
+        ok: true,
+        name: 'notion',
+      })
+
   })
 
   test('messages', async () => {
@@ -31,7 +35,54 @@ describe('notion-provider', () => {
     await (SenecaMsgTest(seneca, BasicMessages)())
   })
 
-  test('page-basic', async () => {
+  test('page-load', async () => {
+    if(!Config) return
+    const seneca = await makeSeneca()
+    const id = Config.page0.id
+
+    let load = await seneca.entity('provider/notion/page').load$(id)
+
+    expect(load.id).toBeDefined()
+	
+  })
+
+  test('page-save-new', async () => {
+    if(!Config) return
+    const seneca = await makeSeneca()
+    
+    const db_id = Config.db0.id
+
+    let properties = {
+      "Name": {
+        "title": [
+          {
+            "text": {
+              "content": "My new page",
+            }
+          }
+        ],
+      },
+      "Description": {
+        "rich_text": [
+          {
+            "text": {
+              "content": "This is the desc",
+            }
+          }
+        ]
+      },
+    }
+
+    let save = await seneca.entity('provider/notion/page')
+      .data$({ properties, }).save$({ db_id, })
+   
+    expect(save.id).toBeDefined()
+    expect(save.properties.Name.title[0].text)
+      .toMatchObject(properties.Name.title[0].text)
+
+  })
+
+  test('page-list', async () => {
     if(!Config) return
     const seneca = await makeSeneca()
 
@@ -39,24 +90,40 @@ describe('notion-provider', () => {
     expect(list.length > 0).toBeTruthy()
   })
 
-  test('page-basic_2', async () => {
+  test('page-save-update', async () => {
     if(!Config) return
     const seneca = await makeSeneca()
-	
-    const page0 = await seneca.entity('provider/notion/page')
-		    .load$(Config.page0.id);
+    const id = Config.page0.id
 
-    expect(page0.url).toEqual('https://www.notion.so/<your_page_url>');
+    let properties = {
+      "Name": {
+        "title": [
+          {
+            "text": {
+              "content": "Updated page",
+            }
+          }
+        ],
+      },
+      "Description": {
+        "rich_text": [
+          {
+            "text": {
+              "content": "This is the updated desc",
+            }
+          }
+        ]
+      },
+    }
 
-    page0.properties.checkMe.checkbox = true;
-    let page0r = await page0.save$()
-    expect(page0r.id).toEqual(page0.id);
-    expect(page0r.properties.checkMe.checkbox).toEqual(page0.properties.checkMe.checkbox);
 
-    const page0u = await seneca.entity("provider/notion/page")
-				    .load$(Config.page0.id)
-    expect(page0u.url).toEqual('https://www.notion.so/<your_page_url>');
-    expect(page0u.properties.checkMe.checkbox).toEqual(page0u.properties.checkMe.checkbox);
+    let load = await seneca.entity('provider/notion/page').load$(id)
+    let update = await load.data$({ properties, }).save$()
+
+    expect(update.id).toBeDefined()
+    expect(update.properties.Name.title[0].text)
+      .toMatchObject(properties.Name.title[0].text)
+    
   })
 	
 })
