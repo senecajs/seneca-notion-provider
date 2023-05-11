@@ -43,6 +43,7 @@ describe('notion-provider', () => {
     let load = await seneca.entity('provider/notion/page').load$(id)
 
     expect(load.id).toBeDefined()
+    expect(load.parent.type).toEqual('database_id')
 	
   })
 
@@ -125,6 +126,29 @@ describe('notion-provider', () => {
       .toMatchObject(properties.Name.title[0].text)
     
   })
+
+  test('database-load', async () => {
+    if(!Config) return
+    const seneca = await makeSeneca()
+    const id = Config.db0.id
+
+    let load = await seneca.entity('provider/notion/database').load$(id)
+
+    expect(load.id).toBeDefined()
+    expect(load.parent.type).toEqual('page_id')
+
+  })
+
+  test('database-list', async () => {
+    if(!Config) return
+    const seneca = await makeSeneca()
+
+    const list = await seneca.entity('provider/notion/database').list$()
+    console.log('list: ', list)
+    expect(list.length > 0).toBeTruthy()
+  })
+
+
 	
 })
 

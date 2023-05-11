@@ -116,6 +116,41 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
 
         }
 
+      },
+      
+      database: {
+        cmd: {
+          list: {
+            action: async function(this: any, entize: any, msg: any) {
+              let q = msg.q || {}
+
+              const config = {
+                body: { ...q }
+              }
+
+              // see https://developers.notion.com/reference/post-search for usage
+              let res: any = await postJSON('https://api.notion.com/v1/search', makeConfig(config))
+
+              let list = res.results.filter((v: any) => v.object == 'database')
+                .map((v: any) => entize(v))
+              return list
+            }
+          },
+
+          load: {
+            action: async function(this: any, entize: any, msg: any) {
+              let id = msg.q.id
+              let res: any
+
+              null == id ? this.fail('invalid_id') : null
+
+              res = await getJSON(`https://api.notion.com/v1/databases/${id}`, makeConfig())
+
+              return entize(res)
+            }
+          },
+        }
+
       }
       
     }
