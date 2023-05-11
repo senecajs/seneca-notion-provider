@@ -16,6 +16,8 @@ if (Fs.existsSync(__dirname + '/local-config.js')) {
 
 jest.setTimeout(6000)
 
+global.shared = ({ notion: { } } as any)
+
 describe('notion-provider', () => {
   test('happy', async ()=>{
     if(!Config) return
@@ -194,19 +196,37 @@ describe('notion-provider', () => {
       },
     }
 
-    let description = [
+
+    let save = await seneca.entity('provider/notion/database')
+      .data$({ title, properties, }).save$({ page_id, })
+
+    expect(save.id).toBeDefined()
+    expect(save.title[0].plain_text).toEqual(title[0].text.content)
+
+    global.shared.notion.db_id = save.id
+
+  })
+
+  test('database-save-update', async () => {
+    if(!Config) return
+    const seneca = await makeSeneca()
+    const id = global.shared.notion.db_id
+
+    let title = [
       {
         'text': {
-          'content': 'This is a new database.',
+          'content': 'Updated New database title',
         },
       },
     ]
 
 
-    let save = await seneca.entity('provider/notion/database')
-      .data$({ title, properties, description }).save$({ page_id, })
+    let load = await seneca.entity('provider/notion/database').load$(id)
+    let update = await load.data$({ title, }).save$()
 
-    expect(save.id).toBeDefined()
+
+    expect(update.id).toBeDefined()
+    expect(update.title[0].plain_text).toEqual(title[0].text.content)
 
   })
 

@@ -57,7 +57,7 @@ function NotionProvider(options) {
                             let q = msg.q || {};
                             let ent = msg.ent;
                             let id = ent.id;
-                            let properties = ent.properties;
+                            let properties = ent.properties || {};
                             let res;
                             (!q.db_id && !id) ? this.fail('invalid_db_id') : null;
                             const config = null == id
@@ -114,9 +114,8 @@ function NotionProvider(options) {
                             let q = msg.q || {};
                             let ent = msg.ent;
                             let id = ent.id;
-                            let properties = ent.properties;
+                            let properties = ent.properties || {};
                             let title = ent.title || [];
-                            let description = ent.description || [];
                             let res;
                             (!q.page_id && !id) ? this.fail('invalid_page_id') : null;
                             const config = null == id
@@ -127,13 +126,13 @@ function NotionProvider(options) {
                                             'page_id': q.page_id
                                         },
                                         'title': [...title],
-                                        'description': [...description],
                                         'properties': { ...properties }
                                     }
                                 }
                                 : {
                                     method: 'PATCH',
                                     body: JSON.stringify({
+                                        'title': [...title],
                                         'properties': { ...properties }
                                     })
                                 };

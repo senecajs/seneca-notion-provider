@@ -79,7 +79,7 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
               let q: any = msg.q || {}
               let ent: any = msg.ent
               let id: any = ent.id
-              let properties: any = ent.properties
+              let properties: any = ent.properties || {}
               let res: any
 
               (!q.db_id && !id) ? this.fail('invalid_db_id') : null
@@ -155,9 +155,8 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
               let q: any = msg.q || {}
               let ent: any = msg.ent
               let id: any = ent.id
-              let properties: any = ent.properties
+              let properties: any = ent.properties || {}
               let title: any = ent.title || []
-              let description: any = ent.description || []
               let res: any
 
               (!q.page_id && !id) ? this.fail('invalid_page_id') : null
@@ -170,13 +169,13 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
                         'page_id': q.page_id
                       },
                       'title': [ ...title ],
-                      'description': [ ...description ],
                       'properties': { ...properties }
                     }
                   }
                 : {
                     method: 'PATCH',
                     body: JSON.stringify({
+                      'title': [ ...title ],
                       'properties': { ...properties }
                     })
 
