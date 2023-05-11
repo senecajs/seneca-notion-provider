@@ -14,7 +14,7 @@ module.exports = {
         version: Pkg.version,
         sdk: {
           name: 'notion',
-          version: Pkg.dependencies['notion'],
+          version: Pkg.dependencies['@notionhq/client'],
         }
       },
     }
