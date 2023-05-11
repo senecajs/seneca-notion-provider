@@ -45,7 +45,7 @@
     "node": ">=14"
   },
   "dependencies": {
-    "@notionhq/client": "^2.0.0"
+    "node-fetch": "^2.6.7"
   },
   "peerDependencies": {
     "@seneca/env": ">=0.2",
@@ -61,7 +61,6 @@
     "esbuild": "^0.14.47",
     "esbuild-jest": "^0.5.0",
     "jest": "^28.1.1",
-    "node-fetch": "^2.6.7",
     "seneca": "^3.28.2",
     "seneca-msg-test": "^3.4.0",
     "typescript": "^4.7.4"
