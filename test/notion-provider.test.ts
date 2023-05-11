@@ -18,6 +18,7 @@ jest.setTimeout(6000)
 
 describe('notion-provider', () => {
   test('happy', async ()=>{
+    if(!Config) return
     expect(NotionProvider).toBeDefined()
     expect(NotionProviderDoc).toBeDefined()
     const seneca = await makeSeneca()
@@ -31,6 +32,7 @@ describe('notion-provider', () => {
   })
 
   test('messages', async () => {
+    if(!Config) return
     const seneca = await makeSeneca()
     await (SenecaMsgTest(seneca, BasicMessages)())
   })
