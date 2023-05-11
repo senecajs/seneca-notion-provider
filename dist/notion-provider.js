@@ -2,7 +2,6 @@
 /* Copyright © 2022 Seneca Project Contributors, MIT License. */
 Object.defineProperty(exports, "__esModule", { value: true });
 const Pkg = require('../package.json');
-const Notion = require('@notionhq/client');
 const fetch = require('node-fetch');
 function NotionProvider(options) {
     const seneca = this;
@@ -81,7 +80,7 @@ function NotionProvider(options) {
             this.fail('notion-missing-keymap', res);
         }
         let authToken = res.keymap.authToken.value;
-        seneca.shared.sdk = new Notion.Client({ auth: authToken });
+        // authenticate
         seneca.shared.headers = {
             'Authorization': `Bearer ${authToken}`,
             'Accept': 'application/json',

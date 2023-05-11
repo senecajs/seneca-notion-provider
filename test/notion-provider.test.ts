@@ -20,9 +20,6 @@ describe('notion-provider', () => {
     expect(NotionProviderDoc).toBeDefined()
     const seneca = await makeSeneca()
 
-    let sdk = seneca.export('NotionProvider/sdk')()
-    expect(sdk).toBeDefined()
-		
     expect(await seneca.post('sys:provider,provider:notion,get:info')).toMatchObject({
       ok: true,
       name: 'notion',

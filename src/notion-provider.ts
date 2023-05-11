@@ -2,7 +2,6 @@
 
 const Pkg = require('../package.json')
 
-const Notion = require('@notionhq/client')
 const fetch = require('node-fetch')
 
 type NotionProviderOptions = {}
@@ -111,7 +110,7 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
 
     let authToken = res.keymap.authToken.value
 
-    seneca.shared.sdk = new Notion.Client({ auth: authToken })
+    // authenticate
     seneca.shared.headers = {
       'Authorization': `Bearer ${authToken}`,
       'Accept': 'application/json',
