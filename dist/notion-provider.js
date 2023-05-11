@@ -22,10 +22,6 @@ function NotionProvider(options) {
             ok: true,
             name: 'notion',
             version: Pkg.version,
-            sdk: {
-                name: 'notion',
-                version: Pkg.dependencies['@notionhq/client'],
-            }
         };
     }
     entityBuilder(this, {
@@ -52,8 +48,7 @@ function NotionProvider(options) {
                         action: async function (entize, msg) {
                             let id = msg.q.id;
                             null == id ? this.fail('invalid_id') : null;
-                            // let res = await getJSON(`https://api.notion.com/v1/pages/${id}`, makeConfig())
-                            let res = await this.shared.sdk.pages.retrieve({ page_id: id });
+                            let res = await getJSON(`https://api.notion.com/v1/pages/${id}`, makeConfig());
                             return entize(res);
                         }
                     },
@@ -65,7 +60,6 @@ function NotionProvider(options) {
                             let obj;
                             try {
                                 await this.shared.sdk.pages.update({ page_id: id, properties: ent.properties });
-                                // obj = await this.entity('provider/notion/page').load$(id) // a fix to get all the properties
                             }
                             catch (err) {
                                 if (err.status >= 400 && err.status < 500) {

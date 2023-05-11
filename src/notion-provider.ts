@@ -34,10 +34,6 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
       ok: true,
       name: 'notion',
       version: Pkg.version,
-      sdk: {
-        name: 'notion',
-        version: Pkg.dependencies['@notionhq/client'],
-      }
     }
   }
     
