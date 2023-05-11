@@ -49,18 +49,19 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
       page: {
         cmd: {
           list: {
-	    action: async function(this: any, entize: any, msg: any) {
-	      let q = msg.q || {}
+            action: async function(this: any, entize: any, msg: any) {
+              let q = msg.q || {}
 
-	      const config = {
-		body: { ...q }
-	      }
-	      // see https://developers.notion.com/reference/post-search for usage
-	      let res: any = await postJSON('https://api.notion.com/v1/search', makeConfig(config))
-	      
-	      let list = res.results.filter((v: any) => v.object == 'page')
-				    .map((v: any) => entize(v))
-	      return list
+              const config = {
+                body: { ...q }
+              }
+
+              // see https://developers.notion.com/reference/post-search for usage
+              let res: any = await postJSON('https://api.notion.com/v1/search', makeConfig(config))
+
+              let list = res.results.filter((v: any) => v.object == 'page')
+                .map((v: any) => entize(v))
+              return list
             }
           },
 
@@ -70,37 +71,37 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
 
               null == id ? this.fail('invalid_id') : null
 
-	      // let res = await getJSON(`https://api.notion.com/v1/pages/${id}`, makeConfig())
-	      let res = await this.shared.sdk.pages.retrieve({page_id: id})
+              let res = await getJSON(`https://api.notion.com/v1/pages/${id}`, makeConfig())
 
-	      return entize(res)
+              return entize(res)
             }
           },
-                    
-	  save: {
-	    action: async function(this: any, entize: any, msg: any) {
-	      let ent = msg.ent
-	      let id = ent.id
-	      let page = ent.page
-	      let obj
-	      try{
-	        await this.shared.sdk.pages.update({page_id: id, properties: ent.properties})
-		// obj = await this.entity('provider/notion/page').load$(id) // a fix to get all the properties
-	      }
-	      catch(err: any) {
-	        if(err.status >= 400 && err.status < 500){
-		  return null
-		}
-		throw err
-	      }
-	      return ent // a more efficient fix for the properties issue - less efficient: uncomment "obj" and return entize(obj)
-            }
 
+          save: {
+            action: async function(this: any, entize: any, msg: any) {
+              let ent = msg.ent
+              let id = ent.id
+              let page = ent.page
+              let obj
+              try {
+                await this.shared.sdk.pages.update({page_id: id, properties: ent.properties})
+              }
+              catch(err: any) {
+                if(err.status >= 400 && err.status < 500) {
+                  return null
+                }
+                throw err
+              }
+              return ent // a more efficient fix for the properties issue - less efficient: uncomment "obj" and return entize(obj)
+            }
           }
         }
+
       }
+      
     }
-  });
+
+  })
     
   this.prepare(async function(this: any) {
     let seneca = this
