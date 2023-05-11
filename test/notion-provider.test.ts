@@ -149,6 +149,67 @@ describe('notion-provider', () => {
     expect(list.length > 0).toBeTruthy()
   })
 
+  test('database-save-new', async () => {
+    if(!Config) return
+    const seneca = await makeSeneca()
+    const page_id = Config.page1.id
+
+
+    let title = [
+      {
+        'text': {
+          'content': 'New database title',
+        },
+      },
+    ]
+
+    let properties = {
+      "Name": {
+        "title": [
+          { 
+            "type": "text",
+            "text": {
+              "content": "My new database",
+            }
+          }
+        ],
+
+      },
+      "Description": {
+        "rich_text": {}
+      },
+      "In stock": {
+        "id": "fk%5EY",
+        "name": "In stock",
+        "type": "checkbox",
+        "checkbox": {}
+      },
+      "Price": {
+        "id": "evWq",
+        "name": "Price",
+        "type": "number",
+        "number": {
+          "format": "dollar"
+        }
+      },
+    }
+
+    let description = [
+      {
+        'text': {
+          'content': 'This is a new database.',
+        },
+      },
+    ]
+
+
+    let save = await seneca.entity('provider/notion/database')
+      .data$({ title, properties, description }).save$({ page_id, })
+
+    expect(save.id).toBeDefined()
+
+  })
+
 
 	
 })

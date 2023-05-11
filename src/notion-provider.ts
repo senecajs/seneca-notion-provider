@@ -149,6 +149,52 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
               return entize(res)
             }
           },
+
+          save: {
+            action: async function(this: any, entize: any, msg: any) {
+              let q: any = msg.q || {}
+              let ent: any = msg.ent
+              let id: any = ent.id
+              let properties: any = ent.properties
+              let title: any = ent.title || []
+              let description: any = ent.description || []
+              let res: any
+
+              (!q.page_id && !id) ? this.fail('invalid_page_id') : null
+
+              const config = null == id
+                ? {
+                    method: 'POST',
+                    body: {
+                      'parent': {
+                        'page_id': q.page_id
+                      },
+                      'title': [ ...title ],
+                      'description': [ ...description ],
+                      'properties': { ...properties }
+                    }
+                  }
+                : {
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                      'properties': { ...properties }
+                    })
+
+                  };
+              (null == id)
+                ? ( res = await postJSON('https://api.notion.com/v1/databases',
+                makeConfig(config)) )
+                : (res = await fetch(`https://api.notion.com/v1/databases/${id}`, makeConfig(config)),
+                   res = await res.json() )
+
+
+              return entize(res)
+
+            }
+
+          }
+
+
         }
 
       }
@@ -169,21 +215,13 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
 
     let authToken = res.keymap.authToken.value
 
-    // authenticate
+    // TODO: authenticate
     seneca.shared.headers = {
       'Authorization': `Bearer ${authToken}`,
       'Accept': 'application/json',
       'Notion-Version': '2021-05-13',
       'Content-Type': 'application/json'
     }
-
-    /*
-    console.log(seneca.shared.headers)
-    let auth = await fetch('https://api.notion.com/v1/databases', seneca.shared.headers)
-    console.log(auth)
-    */
-
-
 
   })
     

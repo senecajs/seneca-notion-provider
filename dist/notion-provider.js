@@ -109,6 +109,41 @@ function NotionProvider(options) {
                             return entize(res);
                         }
                     },
+                    save: {
+                        action: async function (entize, msg) {
+                            let q = msg.q || {};
+                            let ent = msg.ent;
+                            let id = ent.id;
+                            let properties = ent.properties;
+                            let title = ent.title || [];
+                            let description = ent.description || [];
+                            let res;
+                            (!q.page_id && !id) ? this.fail('invalid_page_id') : null;
+                            const config = null == id
+                                ? {
+                                    method: 'POST',
+                                    body: {
+                                        'parent': {
+                                            'page_id': q.page_id
+                                        },
+                                        'title': [...title],
+                                        'description': [...description],
+                                        'properties': { ...properties }
+                                    }
+                                }
+                                : {
+                                    method: 'PATCH',
+                                    body: JSON.stringify({
+                                        'properties': { ...properties }
+                                    })
+                                };
+                            (null == id)
+                                ? (res = await postJSON('https://api.notion.com/v1/databases', makeConfig(config)))
+                                : (res = await fetch(`https://api.notion.com/v1/databases/${id}`, makeConfig(config)),
+                                    res = await res.json());
+                            return entize(res);
+                        }
+                    }
                 }
             }
         }
@@ -120,18 +155,13 @@ function NotionProvider(options) {
             this.fail('notion-missing-keymap', res);
         }
         let authToken = res.keymap.authToken.value;
-        // authenticate
+        // TODO: authenticate
         seneca.shared.headers = {
             'Authorization': `Bearer ${authToken}`,
             'Accept': 'application/json',
             'Notion-Version': '2021-05-13',
             'Content-Type': 'application/json'
         };
-        /*
-        console.log(seneca.shared.headers)
-        let auth = await fetch('https://api.notion.com/v1/databases', seneca.shared.headers)
-        console.log(auth)
-        */
     });
     return {
         exports: {
