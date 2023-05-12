@@ -258,7 +258,9 @@ async function makeSeneca() {
         }
       }
     })
-    .use(NotionProvider)
+    .use(NotionProvider, {
+      debug: true,
+    })
     .use(SenecaDoc)
 
   return seneca.ready()

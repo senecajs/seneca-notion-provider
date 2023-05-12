@@ -5,7 +5,10 @@ const Pkg = require('../package.json')
 const fetch = require('node-fetch')
 
 
-type NotionProviderOptions = {}
+type NotionProviderOptions = {
+  api: any,
+  debug?: boolean,
+}
 
 function NotionProvider(this: any, options: NotionProviderOptions) {
   const seneca: any = this
@@ -16,6 +19,8 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
     name: "notion",
     // url: options.url,
   })
+
+  let api_endpoint = options.api.url
    
   seneca.message('sys:provider,provider:notion,get:info', get_info)
 
@@ -53,7 +58,7 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
               }
 
               // see https://developers.notion.com/reference/post-search for usage
-              let res: any = await postJSON('https://api.notion.com/v1/search', makeConfig(config))
+              let res: any = await postJSON(api_endpoint, makeConfig(config))
 
               let list = res.results.filter((v: any) => v.object == 'page')
                 .map((v: any) => entize(v))
@@ -129,7 +134,7 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
               }
 
               // see https://developers.notion.com/reference/post-search for usage
-              let res: any = await postJSON('https://api.notion.com/v1/search', makeConfig(config))
+              let res: any = await postJSON(api_endpoint, makeConfig(config))
 
               let list = res.results.filter((v: any) => v.object == 'database')
                 .map((v: any) => entize(v))
@@ -231,7 +236,10 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
   }
 }
 const defaults = {
-    debug: false
+  debug: false,
+  api: {
+    url: 'https://api.notion.com/v1/search'
+  },
 }
 Object.assign(NotionProvider, { defaults })
 

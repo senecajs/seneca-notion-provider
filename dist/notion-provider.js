@@ -10,6 +10,7 @@ function NotionProvider(options) {
         name: "notion",
         // url: options.url,
     });
+    let api_endpoint = options.api.url;
     seneca.message('sys:provider,provider:notion,get:info', get_info);
     const makeConfig = (config) => seneca.util.deep({
         headers: {
@@ -37,7 +38,7 @@ function NotionProvider(options) {
                                 body: { ...q }
                             };
                             // see https://developers.notion.com/reference/post-search for usage
-                            let res = await postJSON('https://api.notion.com/v1/search', makeConfig(config));
+                            let res = await postJSON(api_endpoint, makeConfig(config));
                             let list = res.results.filter((v) => v.object == 'page')
                                 .map((v) => entize(v));
                             return list;
@@ -94,7 +95,7 @@ function NotionProvider(options) {
                                 body: { ...q }
                             };
                             // see https://developers.notion.com/reference/post-search for usage
-                            let res = await postJSON('https://api.notion.com/v1/search', makeConfig(config));
+                            let res = await postJSON(api_endpoint, makeConfig(config));
                             let list = res.results.filter((v) => v.object == 'database')
                                 .map((v) => entize(v));
                             return list;
@@ -169,7 +170,10 @@ function NotionProvider(options) {
     };
 }
 const defaults = {
-    debug: false
+    debug: false,
+    api: {
+        url: 'https://api.notion.com/v1/search'
+    },
 };
 Object.assign(NotionProvider, { defaults });
 exports.default = NotionProvider;
