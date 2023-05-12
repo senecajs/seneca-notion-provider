@@ -243,7 +243,7 @@ async function makeSeneca() {
       // debug: true,
       file: [__dirname + '/local-env.js;?'],
       var: {
-	$NOTION_TOKEN: String
+        $NOTION_TOKEN: String
       }
     })
     .use('provider', {
