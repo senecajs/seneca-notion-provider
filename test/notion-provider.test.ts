@@ -1,6 +1,7 @@
 import * as Fs from 'fs'
 
 const Seneca = require('seneca');
+const SenecaDoc = require('@seneca/doc')
 const SenecaMsgTest = require('seneca-msg-test');
 
 import NotionProvider from '../src/notion-provider'
@@ -24,12 +25,14 @@ describe('notion-provider', () => {
     expect(NotionProvider).toBeDefined()
     expect(NotionProviderDoc).toBeDefined()
     const seneca = await makeSeneca()
+    let defaults = await seneca.post('sys:doc,describe:plugin', { plugin: 'NotionProvider' })
 
     expect(await seneca.post('sys:provider,provider:notion,get:info'))
       .toMatchObject({
         ok: true,
         name: 'notion',
       })
+    expect(defaults.def.options).toBeDefined()
 
   })
 
@@ -256,6 +259,7 @@ async function makeSeneca() {
       }
     })
     .use(NotionProvider)
+    .use(SenecaDoc)
 
   return seneca.ready()
 }
