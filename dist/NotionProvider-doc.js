@@ -6,8 +6,7 @@ const docs = {
     get_info: {
         desc: 'Get information about the Notion SDK.',
     },
-    describe_load_page: {
-        name: 'load_page',
+    load_page: {
         desc: 'Load Notion page data into an entity.',
         examples: {},
         reply_desc: {}

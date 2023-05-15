@@ -77,22 +77,7 @@ $ npm install @seneca/notion-provider @seneca/env
 
 ## Options
 
-* `debug` : boolean <i><small>false</small></i>
-
-
-Set plugin options when loading with:
-```js
-
-
-seneca.use('NotionProvider', { name: value, ... })
-
-
-```
-
-
-<small>Note: <code>foo.bar</code> in the list above means 
-<code>{ foo: { bar: ... } }</code></small> 
-
+*None.*
 
 
 <!--END:options-->
@@ -102,7 +87,11 @@ seneca.use('NotionProvider', { name: value, ... })
 
 ## Action Patterns
 
+* [role:entity,base:notion,cmd:list,name:database,zone:provider](#-roleentitybasenotioncmdlistnamedatabasezoneprovider-)
+* [role:entity,base:notion,cmd:list,name:page,zone:provider](#-roleentitybasenotioncmdlistnamepagezoneprovider-)
+* [role:entity,base:notion,cmd:load,name:database,zone:provider](#-roleentitybasenotioncmdloadnamedatabasezoneprovider-)
 * [role:entity,base:notion,cmd:load,name:page,zone:provider](#-roleentitybasenotioncmdloadnamepagezoneprovider-)
+* [role:entity,base:notion,cmd:save,name:database,zone:provider](#-roleentitybasenotioncmdsavenamedatabasezoneprovider-)
 * [role:entity,base:notion,cmd:save,name:page,zone:provider](#-roleentitybasenotioncmdsavenamepagezoneprovider-)
 * [sys:provider,get:info,provider:notion](#-sysprovidergetinfoprovidernotion-)
 
@@ -114,23 +103,81 @@ seneca.use('NotionProvider', { name: value, ... })
 
 ## Action Descriptions
 
+### &laquo; `role:entity,base:notion,cmd:list,name:database,zone:provider` &raquo;
+
+No description provided.
+
+
+
+----------
+### &laquo; `role:entity,base:notion,cmd:list,name:page,zone:provider` &raquo;
+
+Load Notion page data into an entity.
+
+
+
+
+
+#### Replies With
+
+
+```
+{}
+```
+
+
+----------
+### &laquo; `role:entity,base:notion,cmd:load,name:database,zone:provider` &raquo;
+
+No description provided.
+
+
+
+----------
 ### &laquo; `role:entity,base:notion,cmd:load,name:page,zone:provider` &raquo;
 
 Load Notion page data into an entity.
 
 
 
+
+
+#### Replies With
+
+
+```
+{}
+```
+
+
+----------
+### &laquo; `role:entity,base:notion,cmd:save,name:database,zone:provider` &raquo;
+
+No description provided.
+
+
+
 ----------
 ### &laquo; `role:entity,base:notion,cmd:save,name:page,zone:provider` &raquo;
 
-Update Notion page data from an entity.
+Load Notion page data into an entity.
 
+
+
+
+
+#### Replies With
+
+
+```
+{}
+```
 
 
 ----------
 ### &laquo; `sys:provider,get:info,provider:notion` &raquo;
 
-Get information about the provider.
+Get information about the Notion SDK.
 
 
 
