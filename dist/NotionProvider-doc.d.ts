@@ -1,9 +1,12 @@
 declare const docs: {
     get_info: {
         desc: string;
-        validate: {
-            x: any;
-        };
+    };
+    describe_load_page: {
+        name: string;
+        desc: string;
+        examples: {};
+        reply_desc: {};
     };
 };
 export default docs;
