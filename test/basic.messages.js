@@ -1,17 +1,17 @@
 const Pkg = require('../package.json')
 
 module.exports = {
-  print: true, // false
+  print: false, // true for debugging
   pattern: 'sys:provider,provider:notion',
   allow: { missing: true },
 
   data: {
     notion: {
       page: {
-        pg01: { id: 'pg01', }
+        pg01: { id: 'pg01', properties: {} }
       },
       database: {
-        db0: { id: 'db01' }
+        db0: { id: 'db01', properties: {} }
       }
     }
   },
@@ -33,7 +33,7 @@ module.exports = {
       params: {
           id: 'pg01'
       },
-      out: { 'entity$': '-/notion/page', id: 'pg01' }
+      out: { 'entity$': '-/notion/page', id: 'pg01', properties: {} }
 
     },
 
@@ -43,23 +43,7 @@ module.exports = {
       params: {
           id: 'db01'
       },
-      out: { 'entity$': '-/notion/database', id: 'db01' }
-
-    },
-
-    {
-      name: 'list_page',
-      pattern: 'base:notion,cmd:list,name:page,role:entity',
-      params: {},
-      out: [ { 'entity$': '-/notion/page', id: 'pg01' } ],
-
-    },
-
-    {
-      name: 'list_database',
-      pattern: 'base:notion,cmd:list,name:database,role:entity',
-      params: {},
-      out: [ { 'entity$': '-/notion/database', id: 'db01' } ],
+      out: { 'entity$': '-/notion/database', id: 'db01', properties: {} }
 
     },
 
@@ -69,13 +53,27 @@ module.exports = {
       params: {
         ent: {
           id$: 'pg02',
-          title: 'new page',
+          properties: {
+            Name: {
+              title: [ { text: { content: 'My new page' } } ]
+            },
+            Description: {
+              rich_text: [ { text: { content: 'This is the desc' } } ]
+            }
+          },
         }
       },
 
       out: {
         'entity$': '-/notion/page',
-        title: 'new page',
+        properties: {
+          Name: {
+            title: [ { text: { content: 'My new page' } } ]
+          },
+          Description: {
+            rich_text: [ { text: { content: 'This is the desc' } } ]
+          }
+        },
         id: 'pg02'
       }
 
@@ -87,17 +85,71 @@ module.exports = {
       params: {
         ent: {
           id$: 'db02',
-          title: 'new database',
+          properties: {
+            Name: {
+              title: [ { type: 'text', text: { content: 'My new database' } } ]
+            }
+          },
+
         }
+
       },
 
       out: {
         'entity$': '-/notion/database',
-        title: 'new database',
-        id: 'db02'
+        id: 'db02',
+        properties: {
+          Name: {
+            title: [ { type: 'text', text: { content: 'My new database' } } ]
+          }
+        },
+
       }
 
-    }
+    },
+
+    
+    {
+      name: 'list_page',
+      pattern: 'base:notion,cmd:list,name:page,role:entity',
+      params: {},
+      out: [
+        { 'entity$': '-/notion/page', id: 'pg01', properties: {} },
+        {
+          'entity$': '-/notion/page',
+          properties: {
+            Name: {
+              title: [ { text: { content: 'My new page' } } ]
+            },
+            Description: {
+              rich_text: [ { text: { content: 'This is the desc' } } ]
+            }
+          },
+          id: 'pg02'
+        }
+
+      ],
+
+    },
+
+    {
+      name: 'list_database',
+      pattern: 'base:notion,cmd:list,name:database,role:entity',
+      params: {},
+      out: [
+        { 'entity$': '-/notion/database', id: 'db01', properties: {} },
+        {
+          'entity$': '-/notion/database',
+          id: 'db02',
+          properties: {
+            Name: {
+              title: [ { type: 'text', text: { content: 'My new database' } } ]
+            }
+          },
+        }
+      ],
+
+    },
 
 
   ]
