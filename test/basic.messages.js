@@ -67,14 +67,38 @@ module.exports = {
       name: 'save_page',
       pattern: 'base:notion,cmd:save,name:page,role:entity',
       params: {
-        page: {
-          // id$: 'pg02',
+        ent: {
+          id$: 'pg02',
           title: 'new page',
-        },
+        }
       },
 
-      out: {}
+      out: {
+        'entity$': '-/notion/page',
+        title: 'new page',
+        id: 'pg02'
+      }
+
+    },
+
+    {
+      name: 'save_database',
+      pattern: 'base:notion,cmd:save,name:database,role:entity',
+      params: {
+        ent: {
+          id$: 'db02',
+          title: 'new database',
+        }
+      },
+
+      out: {
+        'entity$': '-/notion/database',
+        title: 'new database',
+        id: 'db02'
+      }
+
     }
+
 
   ]
 }
