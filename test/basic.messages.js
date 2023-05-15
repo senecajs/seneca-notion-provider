@@ -1,7 +1,7 @@
 const Pkg = require('../package.json')
 
 module.exports = {
-  print: false,
+  print: true, // false
   pattern: 'sys:provider,provider:notion',
   allow: { missing: true },
 
@@ -63,19 +63,18 @@ module.exports = {
 
     },
 
-    /*
     {
       name: 'save_page',
       pattern: 'base:notion,cmd:save,name:page,role:entity',
       params: {
         page: {
-          id$: 'pg02',
+          // id$: 'pg02',
+          title: 'new page',
         },
       },
 
       out: {}
     }
-    */
 
   ]
 }

@@ -7,5 +7,11 @@ declare const docs: {
         examples: {};
         reply_desc: {};
     };
+    save_page: {
+        desc: string;
+    };
+    list_page: {
+        desc: string;
+    };
 };
 export default docs;

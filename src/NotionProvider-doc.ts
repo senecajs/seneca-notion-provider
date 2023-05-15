@@ -13,6 +13,14 @@ const docs = {
     },
     reply_desc: {
     }
+  },
+
+  save_page: {
+    desc: 'Update/Save Notion page data into an entity.',
+  },
+
+  list_page: {
+    desc: 'List Notion page data into an entity.',
   }
 
 }
