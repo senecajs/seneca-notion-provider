@@ -60,7 +60,10 @@ function NotionProvider(options) {
                             let id = ent.id;
                             let properties = ent.properties || {};
                             let res;
-                            (!q.db_id && !id) ? this.fail('invalid_db_id') : null;
+                            // database_id must be provided if creating a new page
+                            if (!q.db_id && !id) {
+                                this.fail('invalid_db_id');
+                            }
                             const config = null == id
                                 ? {
                                     method: 'POST',
@@ -118,7 +121,10 @@ function NotionProvider(options) {
                             let properties = ent.properties || {};
                             let title = ent.title || [];
                             let res;
-                            (!q.page_id && !id) ? this.fail('invalid_page_id') : null;
+                            // page_id must be provided if creating a new db
+                            if (!q.page_id && !id) {
+                                this.fail('invalid_page_id');
+                            }
                             const config = null == id
                                 ? {
                                     method: 'POST',
@@ -155,13 +161,15 @@ function NotionProvider(options) {
             this.fail('notion-missing-keymap', res);
         }
         let authToken = res.keymap.authToken.value;
-        // TODO: authenticate
-        seneca.shared.headers = {
+        let headers = {
             'Authorization': `Bearer ${authToken}`,
             'Accept': 'application/json',
             'Notion-Version': '2021-05-13',
             'Content-Type': 'application/json'
         };
+        // TODO: authenticate
+        // Allow user to override
+        seneca.shared.headers = { ...headers, ...options.headers };
     });
     return {
         exports: {
@@ -174,6 +182,11 @@ const defaults = {
     api: {
         url: 'https://api.notion.com/v1/search'
     },
+    headers: {
+        'Accept': 'application/json',
+        'Notion-Version': '2021-05-13',
+        'Content-Type': 'application/json'
+    }
 };
 Object.assign(NotionProvider, { defaults });
 exports.default = NotionProvider;

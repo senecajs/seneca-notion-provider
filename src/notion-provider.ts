@@ -7,6 +7,7 @@ const fetch = require('node-fetch')
 
 type NotionProviderOptions = {
   api: any,
+  headers: any,
   debug?: boolean,
 }
 
@@ -87,7 +88,10 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
               let properties: any = ent.properties || {}
               let res: any
 
-              (!q.db_id && !id) ? this.fail('invalid_db_id') : null
+              // database_id must be provided if creating a new page
+              if(!q.db_id && !id) {
+                this.fail('invalid_db_id')
+              }
 
               const config = null == id
                 ? {
@@ -164,7 +168,10 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
               let title: any = ent.title || []
               let res: any
 
-              (!q.page_id && !id) ? this.fail('invalid_page_id') : null
+              // page_id must be provided if creating a new db
+              if(!q.page_id && !id) { 
+                this.fail('invalid_page_id')
+              }
 
               const config = null == id
                 ? {
@@ -218,14 +225,17 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
     }
 
     let authToken = res.keymap.authToken.value
-
-    // TODO: authenticate
-    seneca.shared.headers = {
+    let headers = {
       'Authorization': `Bearer ${authToken}`,
       'Accept': 'application/json',
       'Notion-Version': '2021-05-13',
       'Content-Type': 'application/json'
     }
+
+
+    // TODO: authenticate
+    // Allow user to override
+    seneca.shared.headers = { ...headers, ...options.headers } 
 
   })
     
@@ -235,12 +245,19 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
     }
   }
 }
+
 const defaults = {
   debug: false,
   api: {
     url: 'https://api.notion.com/v1/search'
   },
+  headers: {
+    'Accept': 'application/json',
+    'Notion-Version': '2021-05-13',
+    'Content-Type': 'application/json'
+  }
 }
+
 Object.assign(NotionProvider, { defaults })
 
 export default NotionProvider
