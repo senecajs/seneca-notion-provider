@@ -2,7 +2,6 @@
 /* Copyright © 2022 Seneca Project Contributors, MIT License. */
 Object.defineProperty(exports, "__esModule", { value: true });
 const Pkg = require('../package.json');
-const fetch = require('node-fetch');
 function NotionProvider(options) {
     const seneca = this;
     const makeUtils = this.export("provider/makeUtils");

@@ -2,8 +2,6 @@
 
 const Pkg = require('../package.json')
 
-const fetch = require('node-fetch')
-
 
 type NotionProviderOptions = {
   api: any,
