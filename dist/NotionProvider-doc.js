@@ -13,9 +13,13 @@ const docs = {
     },
     save_page: {
         desc: 'Update/Save Notion page data into an entity.',
+        examples: {},
+        reply_desc: {}
     },
     list_page: {
-        desc: 'List Notion page data into an entity.',
+        desc: 'List Noion page data into an entity.',
+        examples: {},
+        reply_desc: {}
     }
 };
 exports.default = docs;

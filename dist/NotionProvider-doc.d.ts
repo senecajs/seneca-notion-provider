@@ -9,9 +9,13 @@ declare const docs: {
     };
     save_page: {
         desc: string;
+        examples: {};
+        reply_desc: {};
     };
     list_page: {
         desc: string;
+        examples: {};
+        reply_desc: {};
     };
 };
 export default docs;
