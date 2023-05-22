@@ -112,7 +112,7 @@ No description provided.
 ----------
 ### &laquo; `role:entity,base:notion,cmd:list,name:page,zone:provider` &raquo;
 
-Load Notion page data into an entity.
+List Noion page data into an entity.
 
 
 
@@ -160,7 +160,7 @@ No description provided.
 ----------
 ### &laquo; `role:entity,base:notion,cmd:save,name:page,zone:provider` &raquo;
 
-Load Notion page data into an entity.
+Update/Save Notion page data into an entity.
 
 
 
