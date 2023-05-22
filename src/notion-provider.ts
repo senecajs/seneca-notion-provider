@@ -21,7 +21,7 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
     // url: options.url,
   })
 
-  let api_endpoint = options.api.url
+  let { search_endpoint, db_endpoint, page_endpoint } = options.api
    
   seneca.message('sys:provider,provider:notion,get:info', get_info)
 
@@ -59,7 +59,7 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
               }
 
               // see https://developers.notion.com/reference/post-search for usage
-              let res: any = await postJSON(api_endpoint, makeConfig(config))
+              let res: any = await postJSON(search_endpoint, makeConfig(config))
 
               let list = res.results.filter((v: any) => v.object == 'page')
                 .map((v: any) => entize(v))
@@ -74,7 +74,7 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
 
               null == id ? this.fail('invalid_id') : null
 
-              res = await getJSON(`https://api.notion.com/v1/pages/${id}`, makeConfig())
+              res = await getJSON(page_endpoint + `/${id}`, makeConfig())
 
               return entize(res)
             }
@@ -111,9 +111,9 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
 
                   };
               (null == id)
-                ? ( res = await postJSON('https://api.notion.com/v1/pages',
+                ? ( res = await postJSON(page_endpoint,
                 makeConfig(config)) )
-                : (res = await fetch(`https://api.notion.com/v1/pages/${id}`, makeConfig(config)),
+                : (res = await fetch(page_endpoint + `/${id}`, makeConfig(config)),
                    res = await res.json() )
 
 
@@ -138,7 +138,7 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
               }
 
               // see https://developers.notion.com/reference/post-search for usage
-              let res: any = await postJSON(api_endpoint, makeConfig(config))
+              let res: any = await postJSON(search_endpoint, makeConfig(config))
 
               let list = res.results.filter((v: any) => v.object == 'database')
                 .map((v: any) => entize(v))
@@ -153,7 +153,7 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
 
               null == id ? this.fail('invalid_id') : null
 
-              res = await getJSON(`https://api.notion.com/v1/databases/${id}`, makeConfig())
+              res = await getJSON(db_endpoint + `/${id}`, makeConfig())
 
               return entize(res)
             }
@@ -193,9 +193,9 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
 
                   };
               (null == id)
-                ? ( res = await postJSON('https://api.notion.com/v1/databases',
+                ? ( res = await postJSON(db_endpoint,
                 makeConfig(config)) )
-                : (res = await fetch(`https://api.notion.com/v1/databases/${id}`, makeConfig(config)),
+                : (res = await fetch(db_endpoint + `/${id}`, makeConfig(config)),
                    res = await res.json() )
 
 
@@ -249,7 +249,9 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
 const defaults = {
   debug: false,
   api: {
-    url: 'https://api.notion.com/v1/search'
+    search_endpoint: 'https://api.notion.com/v1/search',
+    db_endpoint: 'https://api.notion.com/v1/databases',
+    page_endpoint: 'https://api.notion.com/v1/pages',
   },
   headers: {
     'Accept': 'application/json',

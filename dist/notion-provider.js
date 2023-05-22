@@ -10,7 +10,7 @@ function NotionProvider(options) {
         name: "notion",
         // url: options.url,
     });
-    let api_endpoint = options.api.url;
+    let { search_endpoint, db_endpoint, page_endpoint } = options.api;
     seneca.message('sys:provider,provider:notion,get:info', get_info);
     const makeConfig = (config) => seneca.util.deep({
         headers: {
@@ -38,7 +38,7 @@ function NotionProvider(options) {
                                 body: { ...q }
                             };
                             // see https://developers.notion.com/reference/post-search for usage
-                            let res = await postJSON(api_endpoint, makeConfig(config));
+                            let res = await postJSON(search_endpoint, makeConfig(config));
                             let list = res.results.filter((v) => v.object == 'page')
                                 .map((v) => entize(v));
                             return list;
@@ -49,7 +49,7 @@ function NotionProvider(options) {
                             let id = msg.q.id;
                             let res;
                             null == id ? this.fail('invalid_id') : null;
-                            res = await getJSON(`https://api.notion.com/v1/pages/${id}`, makeConfig());
+                            res = await getJSON(page_endpoint + `/${id}`, makeConfig());
                             return entize(res);
                         }
                     },
@@ -81,8 +81,8 @@ function NotionProvider(options) {
                                     })
                                 };
                             (null == id)
-                                ? (res = await postJSON('https://api.notion.com/v1/pages', makeConfig(config)))
-                                : (res = await fetch(`https://api.notion.com/v1/pages/${id}`, makeConfig(config)),
+                                ? (res = await postJSON(page_endpoint, makeConfig(config)))
+                                : (res = await fetch(page_endpoint + `/${id}`, makeConfig(config)),
                                     res = await res.json());
                             return entize(res);
                         }
@@ -98,7 +98,7 @@ function NotionProvider(options) {
                                 body: { ...q }
                             };
                             // see https://developers.notion.com/reference/post-search for usage
-                            let res = await postJSON(api_endpoint, makeConfig(config));
+                            let res = await postJSON(search_endpoint, makeConfig(config));
                             let list = res.results.filter((v) => v.object == 'database')
                                 .map((v) => entize(v));
                             return list;
@@ -109,7 +109,7 @@ function NotionProvider(options) {
                             let id = msg.q.id;
                             let res;
                             null == id ? this.fail('invalid_id') : null;
-                            res = await getJSON(`https://api.notion.com/v1/databases/${id}`, makeConfig());
+                            res = await getJSON(db_endpoint + `/${id}`, makeConfig());
                             return entize(res);
                         }
                     },
@@ -144,8 +144,8 @@ function NotionProvider(options) {
                                     })
                                 };
                             (null == id)
-                                ? (res = await postJSON('https://api.notion.com/v1/databases', makeConfig(config)))
-                                : (res = await fetch(`https://api.notion.com/v1/databases/${id}`, makeConfig(config)),
+                                ? (res = await postJSON(db_endpoint, makeConfig(config)))
+                                : (res = await fetch(db_endpoint + `/${id}`, makeConfig(config)),
                                     res = await res.json());
                             return entize(res);
                         }
@@ -180,7 +180,9 @@ function NotionProvider(options) {
 const defaults = {
     debug: false,
     api: {
-        url: 'https://api.notion.com/v1/search'
+        search_endpoint: 'https://api.notion.com/v1/search',
+        db_endpoint: 'https://api.notion.com/v1/databases',
+        page_endpoint: 'https://api.notion.com/v1/pages',
     },
     headers: {
         'Accept': 'application/json',
