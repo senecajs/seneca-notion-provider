@@ -45,7 +45,6 @@
     "node": ">=14"
   },
   "dependencies": {
-    "node-fetch": "^2.6.7"
   },
   "peerDependencies": {
     "@seneca/env": ">=0.2",
