@@ -2,6 +2,7 @@ import * as Fs from 'fs'
 
 const Seneca = require('seneca');
 const SenecaDoc = require('@seneca/doc')
+const { Maintain } = require('@seneca/maintain')
 const SenecaMsgTest = require('seneca-msg-test');
 
 import NotionProvider from '../src/notion-provider'
@@ -35,6 +36,8 @@ describe('notion-provider', () => {
     expect(defaults.def.options).toBeDefined()
 
   })
+
+  test('maintain', Maintain)
 
   test('messages', async () => {
     if(!Config) return
