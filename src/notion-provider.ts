@@ -16,7 +16,14 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
 
   const makeUtils = this.export("provider/makeUtils")
 
-  const { makeUrl, getJSON, postJSON, deleteJSON, entityBuilder } = makeUtils({
+  const {
+    makeUrl,
+    getJSON,
+    postJSON,
+    deleteJSON,
+    patchJSON,
+    entityBuilder
+  } = makeUtils({
     name: "notion",
     // url: options.url,
   })
@@ -95,7 +102,6 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
 
               const config = null == id
                 ? {
-                    method: 'POST',
                     body: {
                       'parent': {
                         'database_id': q.db_id
@@ -104,17 +110,15 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
                     }
                   }
                 : {
-                    method: 'PATCH',
-                    body: JSON.stringify({
+                    body: {
                       'properties': { ...properties }
-                    })
+                    }
 
                   };
               (null == id)
                 ? ( res = await postJSON(page_endpoint,
                 makeConfig(config)) )
-                : (res = await fetch(page_endpoint + `/${id}`, makeConfig(config)),
-                   res = await res.json() )
+                : (res = await patchJSON(page_endpoint + `/${id}`, makeConfig(config)) )
 
 
               return entize(res)
@@ -175,7 +179,6 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
 
               const config = null == id
                 ? {
-                    method: 'POST',
                     body: {
                       'parent': {
                         'page_id': q.page_id
@@ -185,18 +188,16 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
                     }
                   }
                 : {
-                    method: 'PATCH',
-                    body: JSON.stringify({
+                    body: {
                       'title': [ ...title ],
                       'properties': { ...properties }
-                    })
+                    }
 
                   };
               (null == id)
                 ? ( res = await postJSON(db_endpoint,
                 makeConfig(config)) )
-                : (res = await fetch(db_endpoint + `/${id}`, makeConfig(config)),
-                   res = await res.json() )
+                : (res = await patchJSON(db_endpoint + `/${id}`, makeConfig(config)) )
 
 
               return entize(res)
