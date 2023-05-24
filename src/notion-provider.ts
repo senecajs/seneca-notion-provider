@@ -2,26 +2,49 @@
 
 const Pkg = require('../package.json')
 
-const Notion = require('@notionhq/client')
-const fetch = require('node-fetch')
 
-type NotionProviderOptions = {}
+type NotionProviderOptions = {
+  api: any,
+  headers: any,
+  debug?: boolean,
+}
 
 function NotionProvider(this: any, options: NotionProviderOptions) {
   const seneca: any = this
-  const entityBuilder = this.export('provider/entityBuilder')
+
+  const makeUtils = this.export("provider/makeUtils")
+
+  const {
+    makeUrl,
+    getJSON,
+    postJSON,
+    deleteJSON,
+    patchJSON,
+    entityBuilder
+  } = makeUtils({
+    name: "notion",
+    // url: options.url,
+  })
+
+  let { search_endpoint, db_endpoint, page_endpoint } = options.api
    
   seneca.message('sys:provider,provider:notion,get:info', get_info)
+
+  const makeConfig = (config?: any) =>
+    seneca.util.deep(
+      {
+        headers: {
+          ...seneca.shared.headers,
+	},
+      },
+      config
+    )
     
   async function get_info(this: any, _msg: any) {
     return {
       ok: true,
       name: 'notion',
       version: Pkg.version,
-      sdk: {
-        name: 'notion',
-        version: Pkg.dependencies['notion'],
-      }
     }
   }
     
@@ -33,82 +56,186 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
       page: {
         cmd: {
           list: {
-	    action: async function(this: any, entize: any, msg: any) {
-	      let limit
-	      if(msg.q){
-                limit = msg.q.limit$ || 100 // The maximum number of results to display per page
-	      }
-	      else{
-	       limit = 100
-	      }
-	      const options = {
-	        method: 'POST',
-		headers: {
-		  'Authorization' : `Bearer ${this.shared.authTok}`,
-		  'Accept': 'application/json',
-		  'Notion-Version': '2022-02-22',
-		  'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({page_size: limit})
-	      };
-	      // see https://developers.notion.com/reference/post-search for usage
-	      let res = await fetch('https://api.notion.com/v1/search', options)
-	      let obj = await res.json()
-	      let list = obj.results.filter(v => v.object == 'page')
-				    .map(v => entize(v))
-	      return list
+            action: async function(this: any, entize: any, msg: any) {
+              let q = msg.q || {}
+
+              const config = {
+                body: { ...q }
+              }
+
+              // see https://developers.notion.com/reference/post-search for usage
+              let res: any = await postJSON(search_endpoint, makeConfig(config))
+
+              let list = res.results.filter((v: any) => v.object == 'page')
+                .map((v: any) => entize(v))
+              return list
             }
           },
 
           load: {
             action: async function(this: any, entize: any, msg: any) {
               let id = msg.q.id
-	      const options = {
-	        method: 'GET',
-		headers: {
-		  'Authorization': `Bearer ${this.shared.authTok}`,
-		  'Accept': 'application/json',
-		  'Notion-Version': '2022-02-22',
-		  'Content-Type': 'application/json'
-		}
-	      }
-	      let res = await fetch(`https://api.notion.com/v1/pages/${id}`, options)
-              let obj = await res.json()
-	      return entize(obj)
+              let res: any
+
+              null == id ? this.fail('invalid_id') : null
+
+              res = await getJSON(page_endpoint + `/${id}`, makeConfig())
+
+              return entize(res)
             }
           },
-                    
-	  save: {
-	    action: async function(this: any, entize: any, msg: any) {
-	      let ent = msg.ent
-	      let id = ent.id
-	      let properties = ent.properties
-	      let obj
-	      try{
-	        await this.shared.sdk.pages.update({page_id: id, properties: ent.properties})
-		// obj = await this.entity('provider/notion/page').load$(id) // a fix to get all the properties
-	      }
-	      catch(err){
-	        if(err.status >= 400 && err.status < 500){
-		  return null
-		}
-		throw err
-	      }
-	      return ent // a more efficient fix for the properties issue - less efficient: uncomment "obj" and return entize(obj)
+
+          save: {
+            action: async function(this: any, entize: any, msg: any) {
+              let q: any = msg.q || {}
+              let ent: any = msg.ent
+              let id: any = ent.id
+              let properties: any = ent.properties || {}
+              let res: any
+
+              // database_id must be provided if creating a new page
+              if(!q.db_id && !id) {
+                this.fail('invalid_db_id')
+              }
+
+              const config = null == id
+                ? {
+                    body: {
+                      'parent': {
+                        'database_id': q.db_id
+                      },
+                      'properties': { ...properties }
+                    }
+                  }
+                : {
+                    body: {
+                      'properties': { ...properties }
+                    }
+
+                  };
+              (null == id)
+                ? ( res = await postJSON(page_endpoint,
+                makeConfig(config)) )
+                : (res = await patchJSON(page_endpoint + `/${id}`, makeConfig(config)) )
+
+
+              return entize(res)
+
             }
+
           }
+
         }
+
+      },
+      
+      database: {
+        cmd: {
+          list: {
+            action: async function(this: any, entize: any, msg: any) {
+              let q = msg.q || {}
+
+              const config = {
+                body: { ...q }
+              }
+
+              // see https://developers.notion.com/reference/post-search for usage
+              let res: any = await postJSON(search_endpoint, makeConfig(config))
+
+              let list = res.results.filter((v: any) => v.object == 'database')
+                .map((v: any) => entize(v))
+              return list
+            }
+          },
+
+          load: {
+            action: async function(this: any, entize: any, msg: any) {
+              let id = msg.q.id
+              let res: any
+
+              null == id ? this.fail('invalid_id') : null
+
+              res = await getJSON(db_endpoint + `/${id}`, makeConfig())
+
+              return entize(res)
+            }
+          },
+
+          save: {
+            action: async function(this: any, entize: any, msg: any) {
+              let q: any = msg.q || {}
+              let ent: any = msg.ent
+              let id: any = ent.id
+              let properties: any = ent.properties || {}
+              let title: any = ent.title || []
+              let res: any
+
+              // page_id must be provided if creating a new db
+              if(!q.page_id && !id) { 
+                this.fail('invalid_page_id')
+              }
+
+              const config = null == id
+                ? {
+                    body: {
+                      'parent': {
+                        'page_id': q.page_id
+                      },
+                      'title': [ ...title ],
+                      'properties': { ...properties }
+                    }
+                  }
+                : {
+                    body: {
+                      'title': [ ...title ],
+                      'properties': { ...properties }
+                    }
+
+                  };
+              (null == id)
+                ? ( res = await postJSON(db_endpoint,
+                makeConfig(config)) )
+                : (res = await patchJSON(db_endpoint + `/${id}`, makeConfig(config)) )
+
+
+              return entize(res)
+
+            }
+
+          }
+
+
+        }
+
       }
+      
     }
-  });
+
+  })
     
   this.prepare(async function(this: any) {
-    let authTok = await this.post('sys:provider,get:key,provider:notion,key:authToken')
-    if (!authTok.ok) {
-      this.fail('api-key-missing')
+    let seneca = this
+
+    let res =
+      await seneca.post('sys:provider,get:keymap,provider:notion')
+
+    if (!res.ok) {
+      this.fail('notion-missing-keymap', res)
     }
-    this.shared.sdk = new Notion.Client({ auth: authTok.value })
-    this.shared.authTok = authTok.value // needed for 'fetch'
+
+    let authToken = res.keymap.authToken.value
+    let headers = {
+      'Authorization': `Bearer ${authToken}`,
+      'Accept': 'application/json',
+      'Notion-Version': '2021-05-13',
+      'Content-Type': 'application/json'
+    }
+
+
+    // TODO: authenticate
+    // Allow user to override
+    seneca.shared.headers = { ...headers, ...options.headers } 
+
   })
     
   return {
@@ -117,9 +244,21 @@ function NotionProvider(this: any, options: NotionProviderOptions) {
     }
   }
 }
+
 const defaults = {
-    debug: false
+  debug: false,
+  api: {
+    search_endpoint: 'https://api.notion.com/v1/search',
+    db_endpoint: 'https://api.notion.com/v1/databases',
+    page_endpoint: 'https://api.notion.com/v1/pages',
+  },
+  headers: {
+    'Accept': 'application/json',
+    'Notion-Version': '2021-05-13',
+    'Content-Type': 'application/json'
+  }
 }
+
 Object.assign(NotionProvider, { defaults })
 
 export default NotionProvider
