@@ -87,13 +87,13 @@ $ npm install @seneca/notion-provider @seneca/env
 
 ## Action Patterns
 
-* [role:entity,base:notion,cmd:list,name:database,zone:provider](#-roleentitybasenotioncmdlistnamedatabasezoneprovider-)
-* [role:entity,base:notion,cmd:list,name:page,zone:provider](#-roleentitybasenotioncmdlistnamepagezoneprovider-)
-* [role:entity,base:notion,cmd:load,name:database,zone:provider](#-roleentitybasenotioncmdloadnamedatabasezoneprovider-)
-* [role:entity,base:notion,cmd:load,name:page,zone:provider](#-roleentitybasenotioncmdloadnamepagezoneprovider-)
-* [role:entity,base:notion,cmd:save,name:database,zone:provider](#-roleentitybasenotioncmdsavenamedatabasezoneprovider-)
-* [role:entity,base:notion,cmd:save,name:page,zone:provider](#-roleentitybasenotioncmdsavenamepagezoneprovider-)
-* [sys:provider,get:info,provider:notion](#-sysprovidergetinfoprovidernotion-)
+* ["role":"entity","base":"notion","cmd":"list","name":"database","zone":"provider"](#-roleentitybasenotioncmdlistnamedatabasezoneprovider-)
+* ["role":"entity","base":"notion","cmd":"list","name":"page","zone":"provider"](#-roleentitybasenotioncmdlistnamepagezoneprovider-)
+* ["role":"entity","base":"notion","cmd":"load","name":"database","zone":"provider"](#-roleentitybasenotioncmdloadnamedatabasezoneprovider-)
+* ["role":"entity","base":"notion","cmd":"load","name":"page","zone":"provider"](#-roleentitybasenotioncmdloadnamepagezoneprovider-)
+* ["role":"entity","base":"notion","cmd":"save","name":"database","zone":"provider"](#-roleentitybasenotioncmdsavenamedatabasezoneprovider-)
+* ["role":"entity","base":"notion","cmd":"save","name":"page","zone":"provider"](#-roleentitybasenotioncmdsavenamepagezoneprovider-)
+* ["sys":"provider","get":"info","provider":"notion"](#-sysprovidergetinfoprovidernotion-)
 
 
 <!--END:action-list-->
@@ -103,14 +103,14 @@ $ npm install @seneca/notion-provider @seneca/env
 
 ## Action Descriptions
 
-### &laquo; `role:entity,base:notion,cmd:list,name:database,zone:provider` &raquo;
+### &laquo; `"role":"entity","base":"notion","cmd":"list","name":"database","zone":"provider"` &raquo;
 
 No description provided.
 
 
 
 ----------
-### &laquo; `role:entity,base:notion,cmd:list,name:page,zone:provider` &raquo;
+### &laquo; `"role":"entity","base":"notion","cmd":"list","name":"page","zone":"provider"` &raquo;
 
 List Noion page data into an entity.
 
@@ -127,14 +127,14 @@ List Noion page data into an entity.
 
 
 ----------
-### &laquo; `role:entity,base:notion,cmd:load,name:database,zone:provider` &raquo;
+### &laquo; `"role":"entity","base":"notion","cmd":"load","name":"database","zone":"provider"` &raquo;
 
 No description provided.
 
 
 
 ----------
-### &laquo; `role:entity,base:notion,cmd:load,name:page,zone:provider` &raquo;
+### &laquo; `"role":"entity","base":"notion","cmd":"load","name":"page","zone":"provider"` &raquo;
 
 Load Notion page data into an entity.
 
@@ -151,14 +151,14 @@ Load Notion page data into an entity.
 
 
 ----------
-### &laquo; `role:entity,base:notion,cmd:save,name:database,zone:provider` &raquo;
+### &laquo; `"role":"entity","base":"notion","cmd":"save","name":"database","zone":"provider"` &raquo;
 
 No description provided.
 
 
 
 ----------
-### &laquo; `role:entity,base:notion,cmd:save,name:page,zone:provider` &raquo;
+### &laquo; `"role":"entity","base":"notion","cmd":"save","name":"page","zone":"provider"` &raquo;
 
 Update/Save Notion page data into an entity.
 
@@ -175,7 +175,7 @@ Update/Save Notion page data into an entity.
 
 
 ----------
-### &laquo; `sys:provider,get:info,provider:notion` &raquo;
+### &laquo; `"sys":"provider","get":"info","provider":"notion"` &raquo;
 
 Get information about the Notion SDK.
 

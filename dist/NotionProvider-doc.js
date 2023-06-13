@@ -2,7 +2,7 @@
 /* Copyright © 2022 Seneca Project Contributors, MIT License. */
 Object.defineProperty(exports, "__esModule", { value: true });
 const Joi = require('@hapi/joi');
-const docs = {
+const messages = {
     get_info: {
         desc: 'Get information about the Notion SDK.',
     },
@@ -22,8 +22,25 @@ const docs = {
         reply_desc: {}
     }
 };
-exports.default = docs;
+const sections = {
+/*
+intro: {
+  path: '../seneca-provider/doc/intro.md'
+},
+
+support: {
+  path: '../seneca-provider/doc/support.md'
+}
+*/
+};
+exports.default = {
+    messages,
+    sections,
+};
 if ('undefined' !== typeof (module)) {
-    module.exports = docs;
+    module.exports = {
+        messages,
+        sections,
+    };
 }
 //# sourceMappingURL=NotionProvider-doc.js.map
